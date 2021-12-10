@@ -1,4 +1,4 @@
-# -------------------------------------------------------------------
+//# -------------------------------------------------------------------
 # General and Navigation
 # -------------------------------------------------------------------
 
@@ -36,7 +36,7 @@ alias msad="/home/$(whoami)/git/aladdin/env/singularity.sh -c "$SHELL""
 alias msad2="/home/$(whoami)/git/aladdin2/env/singularity.sh -c "$SHELL""
 
 # Misc
-alias jp="jupyter lab --no-browser --ip $HOST_IP_ADDR"
+alias jp="jupyter lab --no-browser --ip $(hostname -f)"
 alias ls='ls -hF --color' # add colors for filetype recognition
 alias nv='nvidia-smi'
 

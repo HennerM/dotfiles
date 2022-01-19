@@ -1,4 +1,4 @@
-//# -------------------------------------------------------------------
+# -------------------------------------------------------------------
 # General and Navigation
 # -------------------------------------------------------------------
 
@@ -8,6 +8,7 @@ TENSOR_BOARD_SIF="oras://singularity-master.artifacts.speechmatics.io/tensorboar
 # Quick navigation add more here
 alias a="cd ~/git/aladdin"
 alias a2="cd ~/git/aladdin2"
+alias n="cd ~/git/notebooks"
 alias cde="cd /exp/$(whoami)"
 alias cdt="cd ~/tb"
 alias cdn="cd ~/notebooks"
@@ -53,7 +54,7 @@ alias mut="make unittest"
 # Tensorboard
 # -------------------------------------------------------------------
 
-alias tb="singularity exec $TENSOR_BOARD_SIF tensorboard --host=$HOST_IP_ADDR --reload_multifile true --logdir=."
+alias tb="singularity exec $TENSOR_BOARD_SIF tensorboard --host=$(hostname -f) --reload_multifile true --logdir=."
 tblink () {
   # Creates simlinks from specified folders to ~/tb/x where x is an incrmenting number
   # and luanches tensorboard
@@ -164,6 +165,16 @@ qlog () {
   else
     echo "Usage: qlog <jobid>" >&2
     echo "Usage: qlog <array_jobid> <sub_jobid>" >&2
+  fi
+}
+
+qtb () {
+  # Get log path of job
+  if [ "$#" -eq 1 ]; then
+     dir=$(dirname $(qstat -j $1 | grep stdout_path_list | cut -d ":" -f4))
+     singularity exec $TENSOR_BOARD_SIF tensorboard --host=$(hostname -f) --reload_multifile true --logdir=$dir
+  else
+    echo "Usage: qtb <jobid>" >&1
   fi
 }
 

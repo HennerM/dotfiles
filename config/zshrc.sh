@@ -5,7 +5,14 @@ ZSH_DISABLE_COMPFIX=true
 ZSH_THEME="powerlevel10k/powerlevel10k"
 ZSH=$HOME/.oh-my-zsh
 
-plugins=(zsh-autosuggestions zsh-syntax-highlighting zsh-completions history-substring-search z brew git)
+plugins=(zsh-autosuggestions
+	zsh-syntax-highlighting
+	 zsh-completions
+	history-substring-search
+	z
+	brew
+	git
+	zsh-navigation-tools)
 
 source $ZSH/oh-my-zsh.sh
 source $CONFIG_DIR/aliases.sh

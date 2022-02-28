@@ -25,6 +25,7 @@ alias t='tail'
 alias rl="readlink -f"
 alias fd='find . -type d -name'
 alias ff='find . -type f -name'
+alias le="less -N"
 
 # storage
 alias du='du -kh' # file space

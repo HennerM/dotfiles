@@ -28,6 +28,8 @@ alias b2="ssh b2"
 alias b3="ssh b3"
 alias b4="ssh b4"
 alias b5="ssh b5"
+alias sif="echo $SINGULARITY_CONTAINER"
+
 
 # Change to aladdin directory and activate SIF
 alias msa="make -C /home/$(whoami)/git/aladdin/ shell"

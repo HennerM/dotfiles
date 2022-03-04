@@ -121,7 +121,11 @@ alias tdel="tmux kill-session -t"
 #-------------------------------------------------------------
 
 alias l="ls -CF --color=auto"
-alias ll="ls -l --group-directories-first"
+if [ "$OSTYPE" = linux-gnu ]; then
+    alias ll="ls -l --group-directories-first"
+else
+    alias ll="gls -l --group-directories-first"
+fi
 alias la='ls -Al'         # show hidden files
 alias lx='ls -lXB'        # sort by extension
 alias lk='ls -lSr'        # sort by size, biggest last

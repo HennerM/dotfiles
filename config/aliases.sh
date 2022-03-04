@@ -136,3 +136,6 @@ alias lm='ls -al |more'   # pipe through 'more'
 alias lr='ls -lR'         # recursive ls
 alias tree='tree -Csu'    # nice alternative to 'recursive ls'
 
+# MISC
+
+alias p='python3'

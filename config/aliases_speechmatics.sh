@@ -39,7 +39,7 @@ alias msad="/home/$(whoami)/git/aladdin/env/singularity.sh -c "$SHELL""
 alias msad2="/home/$(whoami)/git/aladdin2/env/singularity.sh -c "$SHELL""
 
 # Misc
-alias jp="jupyter lab --no-browser --ip $(hostname -f)"
+alias jp="jupyter lab --no-browser --ip 0.0.0.0"
 alias ls='ls -hF --color' # add colors for filetype recognition
 alias nv='nvidia-smi'
 
@@ -56,7 +56,7 @@ alias mut="make unittest"
 # Tensorboard
 # -------------------------------------------------------------------
 
-alias tb="singularity exec $TENSOR_BOARD_SIF tensorboard --host=$(hostname -f) --reload_multifile true --logdir=."
+alias tb="singularity exec $TENSOR_BOARD_SIF tensorboard --bind_all --reload_multifile true --logdir=."
 tblink () {
   # Creates simlinks from specified folders to ~/tb/x where x is an incrmenting number
   # and luanches tensorboard

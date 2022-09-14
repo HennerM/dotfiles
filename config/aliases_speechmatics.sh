@@ -8,6 +8,7 @@ TENSOR_BOARD_SIF="oras://singularity-master.artifacts.speechmatics.io/tensorboar
 # Quick navigation add more here
 alias a="cd ~/git/aladdin"
 alias a2="cd ~/git/aladdin2"
+alias a3="cd ~/git/aladdin3"
 alias n="cd ~/git/notebooks"
 alias cde="cd /exp/$(whoami)"
 alias cdt="cd ~/tb"

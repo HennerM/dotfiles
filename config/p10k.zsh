@@ -878,7 +878,7 @@
 
   # Don't show context unless running with privileges or in SSH.
   # Tip: Remove the next line to always show context.
-  typeset -g POWERLEVEL9K_CONTEXT_{DEFAULT,SUDO}_{CONTENT,VISUAL_IDENTIFIER}_EXPANSION=
+  # typeset -g POWERLEVEL9K_CONTEXT_{DEFAULT,SUDO}_{CONTENT,VISUAL_IDENTIFIER}_EXPANSION=
 
   # Custom icon.
   # typeset -g POWERLEVEL9K_CONTEXT_VISUAL_IDENTIFIER_EXPANSION='⭐'
@@ -1577,7 +1577,8 @@
   function prompt_singularity() {
     if [ ! -z "$SINGULARITY_CONTAINER" ]; then
       name=$(echo ${SINGULARITY_CONTAINER} | awk -F/ '{print $(NF-0)}')
-      p10k segment -f 031 -i '💫' -t "${name}"
+      [[ ! -z "$SIF_OVERLAY" ]] && icon='💫 🚧' || icon='💫'
+      p10k segment -f 031 -i "${icon}" -t "${name}"
     fi
   }
 

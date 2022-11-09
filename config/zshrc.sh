@@ -7,8 +7,8 @@ ZSH=$HOME/.oh-my-zsh
 
 plugins=(zsh-autosuggestions
 	zsh-syntax-highlighting
-	 zsh-completions
-	history-substring-search
+	zsh-completions
+	zsh-history-substring-search
 	z
 	brew
 	git

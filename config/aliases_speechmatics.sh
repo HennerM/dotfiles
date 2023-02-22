@@ -207,20 +207,7 @@ qlog () {
     echo "Usage: qlog <array_jobid> <sub_jobid>" >&2
   fi
 }
-<<<<<<< HEAD
 
-qtb () {
-  # Get log path of job
-  if [ "$#" -eq 1 ]; then
-     dir=$(dirname $(qstat -j $1 | grep stdout_path_list | cut -d ":" -f4))
-     singularity exec $TENSOR_BOARD_SIF tensorboard --host=$(hostname -f) --reload_multifile true --logdir=$dir
-  else
-    echo "Usage: qtb <jobid>" >&1
-  fi
-}
-
-=======
->>>>>>> sm/master
 qdesc () {
   qstat | tail -n +3 | while read line; do
   job=$(echo $line | awk '{print $1}')

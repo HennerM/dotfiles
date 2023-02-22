@@ -69,8 +69,9 @@ alias ga="git add"
 alias gaa="git add ."
 alias gau="git add -u"
 alias gc="git commit -m"
+alias gcan="git commit -a --amend --no-edit"
 alias gp="git push"
-alias gpf="git push -f"
+alias gpf="git push -f --no-verify"
 
 alias gg='git gui'
 alias glog='git log --oneline --all --graph --decorate'

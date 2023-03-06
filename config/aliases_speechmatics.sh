@@ -119,7 +119,7 @@ tbadd() {
 # -------------------------------------------------------------------
 
 # Short aliases
-full_queue='qstat -q "aml*.q@*" -f -u \*'
+full_queue='qstat -f -u \*'
 alias q='qstat'
 alias qtop='qalter -p 1024'
 alias qq=$full_queue # Display full queue

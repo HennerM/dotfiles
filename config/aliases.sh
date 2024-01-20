@@ -93,7 +93,7 @@ alias gs="git status"
 
 alias gco="git checkout"
 alias gcb="git checkout -b"
-alias gcm="git checkout master"
+alias gcm="git checkout master || git checkout main"
 
 alias grhead="git reset HEAD^"
 alias grhard="git fetch origin && git reset --hard"

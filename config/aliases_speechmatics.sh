@@ -55,7 +55,6 @@ alias nv='nvidia-smi'
 
 # make file
 alias m='make'
-alias mc="make check"
 alias ms='make shell'
 alias mf="make format"
 alias mtest="make test"
@@ -148,7 +147,7 @@ qlogin () {
     else
       queue="$2"
     fi
-    /usr/bin/qlogin -now n -pe smp $1 -q $queue -l "$gpu_args" -N D_$(whoami)
+    /usr/bin/qlogin -now n -p 1024 -pe smp $1 -q $queue -l "$gpu_args" -N D_$(whoami)
   else
     echo "Usage: qlogin <num_gpus>" >&2
     echo "Usage: qlogin <num_gpus> <queue>" >&2

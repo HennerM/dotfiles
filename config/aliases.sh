@@ -6,7 +6,7 @@ alias cdg="cd ~/git"
 alias zrc="cd $DOT_DIR/zsh"
 alias dot="cd $DOT_DIR"
 alias jp="jupyter lab"
-
+alias cf="clang-format -i"
 # -------------------------------------------------------------------
 # general
 # -------------------------------------------------------------------

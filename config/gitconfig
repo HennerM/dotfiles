@@ -1,0 +1,27 @@
+# Local/private config goes in the include
+[include]
+    path = ~/.gitconfig.local
+
+[core]
+    pager = delta
+
+[init]
+    defaultBranch = main
+
+[interactive]
+    diffFilter = delta --color-only
+
+[delta]
+    navigate = true  # use n and N to move between diff sections
+    dark = true      # or light = true, or omit for auto-detection
+    line-numbers = true
+    side-by-side = true
+    file-modified-label = modified:
+[merge]
+    conflictstyle = zdiff3
+
+[pull]
+    rebase = true
+
+[fetch]
+	prune = true

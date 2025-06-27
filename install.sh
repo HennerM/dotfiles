@@ -43,12 +43,16 @@ esac
 # Installing on linux with apt
 if [ $machine == "Linux" ]; then
     DOT_DIR=$(dirname $(realpath $0))
+    sudo apt-get install git-delta
+    sudo apt-get install starship
     [ $zsh == true ] && sudo apt-get install zsh
     [ $tmux == true ] && sudo apt-get install tmux 
 
 # Installing on mac with homebrew
 elif [ $machine == "Mac" ]; then
     brew install coreutils  # Mac won't have realpath before coreutils installed
+    bew install git-delta
+    bew install starship
     DOT_DIR=$(dirname $(realpath $0))
     [ $zsh == true ] && brew install zsh
     [ $tmux == true ] && brew install tmux

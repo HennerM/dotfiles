@@ -17,4 +17,4 @@ source $ZSH/oh-my-zsh.sh
 source $CONFIG_DIR/aliases.sh
 source $CONFIG_DIR/extras.sh
 
-eval "$(starship init zsh)"
+which starship >/dev/null 2>&1 && eval "$(starship init zsh)"

@@ -44,8 +44,12 @@ fi
 
 # zshrc setup
 echo "source $DOT_DIR/config/zshrc.sh" > $HOME/.zshrc
-
-ln -s $(pwd)/config/gitconfig $HOME/.gitconfig
+if [ ! -f $HOME/.gitconfig ]; then
+    ln -s $(pwd)/config/gitconfig $HOME/.gitconfig
+fi
 touch $HOME/.gitconfig.local
-
+if [[ $LOC == "local" ]]; then
+    mkdir -p ~/.config/ghostty
+    ln -s $(pwd)/config/ghostty.conf $HOME/.config/ghostty/config
+fi
 zsh

@@ -1,17 +1,12 @@
-# Speechmatics dotfiles
-
-This repo provides a minimal working set of dotfiles for new starters at Speechmatics, it is not intended to be exhaustive. Suggestions for useful additions are welcome.
-
-A very lightweight vimrc is included (deployed with optional flag) - speak to Ed / Sam if you want to learn more about creating a more extensive config.
+# Markus's dotfiles
 
 ## Installation
 
 ### Step 1
 Clone this repo
 ```bash
-git clone git@gitlab1.speechmatics.io:aml/sm-dotfiles.git ~/git/dotfiles
+git clone git@github.com:HennerM/dotfiles.git ~/git/dotfiles
 ```
-you probably will also want to push this repo to your personal github
 
 ### Step 2
 Install dependencies (e.g. oh-my-zsh and related plugins), you can specify options to install specific programs: tmux, zsh, note that your dev-vm will already have tmux and zsh installed so you don't need to provide any options in this case, but you may need to provide these if you are installing locally. 

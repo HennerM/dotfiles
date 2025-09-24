@@ -83,6 +83,8 @@ else
     git clone https://github.com/zsh-users/zsh-history-substring-search \
         ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-history-substring-search 
     
+    git clone https://github.com/MichaelAquilina/zsh-you-should-use \
+	    ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/you-should-use
     echo " --------- INSTALLED SUCCESSFULLY ✅ ----------- "
     echo " --------- NOW RUN ./deploy.sh [OPTION] -------- "
 fi

@@ -11,6 +11,7 @@ plugins=(zsh-autosuggestions
 	z
 	brew
 	git
+	you-should-use
 	zsh-navigation-tools)
 
 source $ZSH/oh-my-zsh.sh

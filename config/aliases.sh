@@ -144,3 +144,4 @@ alias tree='tree -Csu'    # nice alternative to 'recursive ls'
 # MISC
 
 alias p='python3'
+alias sv='source .venv/bin/activate'

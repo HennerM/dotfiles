@@ -28,7 +28,7 @@ zstyle ':completion:*' hosts off
 
 # Uncomment this to set the history search to match the prefix. It's used in the zsh-history-substring-search plugin,
 # and it just checks if this variable is defined, not what the value is.
-# export HISTORY_SUBSTRING_SEARCH_PREFIXED=true
+export HISTORY_SUBSTRING_SEARCH_PREFIXED=true
 
 # This speeds up pasting w/ autosuggest
 # https://github.com/zsh-users/zsh-autosuggestions/issues/238

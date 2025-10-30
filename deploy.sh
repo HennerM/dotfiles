@@ -50,6 +50,8 @@ fi
 touch $HOME/.gitconfig.local
 if [[ $LOC == "local" ]]; then
     mkdir -p ~/.config/ghostty
-    ln -s $(pwd)/config/ghostty.conf $HOME/.config/ghostty/config
+    if [ ! -f "$HOME/.config/ghostty/config" ]; then
+        ln -s $(pwd)/config/ghostty.conf $HOME/.config/ghostty/config
+    fi
 fi
 zsh

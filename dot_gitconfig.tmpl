@@ -1,3 +1,7 @@
+[user]
+    name = {{ .name }}
+    email = {{ .email }}
+
 # Local/private config goes in the include
 [include]
     path = ~/.gitconfig.local
@@ -22,6 +26,9 @@
 
 [pull]
     rebase = true
+
+[alias]
+    fix-commit = "!f() { pre-commit run && git add . && git commit -m \"$@\"; }; f"
 
 [fetch]
 	prune = true

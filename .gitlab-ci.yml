@@ -1,6 +1,19 @@
-bash_lint:
+lint:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "push"'
+  variables:
+    GIT_STRATEGY: clone
+  before_script:
+    - apt-get update -y
+    - DEBIAN_FRONTEND=noninteractive apt-get install -y curl
+    - sh -c "$(curl -fsSL https://get.chezmoi.io)" -- -b /usr/local/bin
   script:
-    - bash -n install.sh
-    - bash -n deploy.sh
+    # Render templates headlessly (all data flags false) to validate them.
+    # .chezmoi.toml.tmpl is intentionally excluded: its promptBoolOnce helpers
+    # are only available during `chezmoi init`, not `execute-template`.
+    - mkdir -p ~/.config/chezmoi
+    - printf 'data.name = "CI"\ndata.email = "ci@example.com"\ndata.macos = false\ndata.vim = false\ndata.installTmux = false\ndata.installZsh = false\n' > ~/.config/chezmoi/chezmoi.toml
+    - chezmoi execute-template --source "$(pwd)" --config ~/.config/chezmoi/chezmoi.toml < run_onchange_install-dependencies.sh.tmpl > /dev/null
+    - chezmoi execute-template --source "$(pwd)" --config ~/.config/chezmoi/chezmoi.toml < dot_gitconfig.tmpl > /dev/null
+    - chezmoi execute-template --source "$(pwd)" --config ~/.config/chezmoi/chezmoi.toml < .chezmoiignore > /dev/null
+    - chezmoi execute-template --source "$(pwd)" --config ~/.config/chezmoi/chezmoi.toml < run_onchange_install-dependencies.sh.tmpl | bash -n

@@ -1,94 +1,127 @@
 # Markus's dotfiles
 
-## Installation
+Managed with [chezmoi](https://www.chezmoi.io/). The repo itself is a chezmoi
+source directory: files are named using chezmoi's `dot_*` / `private_*`
+conventions and rendered directly into `$HOME` (no symlinks back into the
+repo).
 
-### Step 1
-Clone this repo
+## Layout
+
+```
+.chezmoi.toml.tmpl                  # prompts for macos/vim/installTmux/installZsh + git identity
+.chezmoiignore                      # conditional files (vimrc, ghostty)
+dot_zshrc                           # ~/.zshrc
+dot_tmux.conf                       # ~/.tmux.conf
+dot_gitconfig.tmpl                  # ~/.gitconfig (user.name/email templated)
+dot_vimrc                           # ~/.vimrc         (when vim=true)
+private_dot_config/zsh/aliases.sh   # ~/.config/zsh/aliases.sh   (sourced by zshrc)
+private_dot_config/zsh/extras.sh    # ~/.config/zsh/extras.sh
+private_dot_config/zsh/slurm.sh     # ~/.config/zsh/slurm.sh
+private_dot_config/zsh/p10k.zsh     # ~/.config/zsh/p10k.zsh
+private_dot_config/ghostty/config   # ~/.config/ghostty/config  (when macos=true)
+dot_aerospace.toml                 # ~/.aerospace.toml         (when macos=true)
+run_onchange_install-dependencies.sh.tmpl  # brew/apt deps + oh-my-zsh + plugins
+iterm/                              # iterm colour schemes (import manually, macOS only)
+```
+
+## Setup
+
+### 1. Install chezmoi
+
+macOS:
 ```bash
-git clone git@github.com:HennerM/dotfiles.git ~/git/dotfiles
+brew install chezmoi
+```
+Server / Ubuntu:
+```bash
+sh -c "$(curl -fsSL https://get.chezmoi.io)" -- -b "$HOME/.local/bin"
 ```
 
-### Step 2
-Install dependencies (e.g. oh-my-zsh and related plugins), you can specify options to install specific programs: tmux, zsh, note that your dev-vm will already have tmux and zsh installed so you don't need to provide any options in this case, but you may need to provide these if you are installing locally. 
+### 2. Init from this repo
 
-Installation on a mac machine requires homebrew so install this [from here](https://brew.sh/) first if you haven't already.
+This clones the repo to `~/.local/share/chezmoi` and prompts for the options
+that used to be `--local` / `--vim` / `--tmux` / `--zsh`:
 
 ```bash
-# Install just the dependencies (if on dev-vm)
-./install.sh
-# Install dependencies + tmux & zsh (if local or on linux without tmux or zsh)
-./install.sh --tmux --zsh
+chezmoi init --apply git@github.com:HennerM/dotfiles.git
 ```
 
-### Step 3
-Deploy (e.g. source aliases for .zshrc, apply oh-my-zsh settings etc..)
+You will be asked:
+- `Git user.name` — your name for commits
+- `Git user.email` — your email for commits
+- `macOS machine (deploy ghostty config)?` — equivalent to the old `--local`
+- `Deploy simple vimrc?` — equivalent to the old `--vim`
+- `Install tmux via package manager?` — equivalent to the old `--tmux`
+- `Install zsh via package manager?` — equivalent to the old `--zsh`
+
+Answers are stored in `~/.config/chezmoi/chezmoi.toml`; `dot_gitconfig.tmpl`
+renders `[user] name`/`email` from them, so your git identity is set up
+automatically. Machine-specific or secret git settings (e.g. `[safe] directory`
+entries, credentials) go in `~/.gitconfig.local`, which is `[include]`d by
+`~/.gitconfig`.
+
+`chezmoi init --apply` also runs `run_onchange_install-dependencies.sh.tmpl`,
+which installs `git-delta`, `starship`, oh-my-zsh and the zsh plugins. The
+script auto-detects the OS via `uname -s` and uses `brew` on macOS or
+`apt-get` on Linux; on a host where everything is already present it just
+skips.
+
+### macOS vs. server / Ubuntu
+
+The same source tree serves both, distinguished by the `macos` data flag and
+the OS the install script detects. Typical answers per deployment type:
+
+| Prompt                    | macOS (local Mac)         | Server / Ubuntu (dev-vm)   |
+|---------------------------|---------------------------|----------------------------|
+| `macOS machine ...`       | `true` (ghostty+aerospace) | `false` (both skipped)     |
+| `Deploy simple vimrc?`   | your choice               | your choice                |
+| `Install tmux ...`        | `true` (not preinstalled) | `false` (usually present)  |
+| `Install zsh ...`         | `true` (not preinstalled) | `false` (usually present)  |
+
+What differs between the two:
+
+- **Package manager.** `run_onchange_install-dependencies.sh.tmpl` runs
+  `brew install` on Darwin and `sudo apt-get install` on Linux — chosen by
+  `uname -s`, not the `macos` flag, so it stays correct even if you mis-answer.
+- **macOS-only configs.** `~/.config/ghostty/config` (Ghostty terminal) and
+  `~/.aerospace.toml` (AeroSpace tiling WM) are only deployed when `macos=true`.
+  On a server both files are ignored and their target paths are never created.
+- **iterm colour schemes.** `iterm/` is only useful on macOS and is imported
+  manually (Settings → Profiles → Colors → Color Presets → Import). It is
+  ignored by chezmoi on both platforms.
+- **`coreutils`.** On macOS the install script also pulls in `coreutils`
+  (for `realpath`, `gls`, etc. used by the aliases). Linux already has these.
+
+### 3. (Optional) powerlevel10k
+
+This repo ships a preconfigured `~/.config/zsh/p10k.zsh`. To reconfigure run
+`p10k configure`; when asked "Apply changes to ~/.zshrc?" answer **no** (chezmoi
+owns `~/.zshrc`).
+
+A Nerd Font is recommended for the icons, see
+[the powerlevel10k guide](https://github.com/romkatv/powerlevel10k#meslo-nerd-font-patched-for-powerlevel10k).
+
+### 4. (Optional) iterm colour schemes
+
+`iterm/onedark.itermcolors` and `iterm/onedarker.itermcolors` can be imported
+under Settings → Profiles → Colors → Color Presets → Import.
+
+## Day-to-day commands
+
 ```bash
-# Remote linux machine
-./deploy.sh  
-# Local mac machine
-./deploy.sh --local   
-# Include simple vimrc 
-./deploy.sh --vim
+chezmoi update            # pull + apply latest from the remote
+chezmoi diff              # preview pending changes
+chezmoi apply             # apply pending changes
+chezmoi edit              # $EDITOR on the source dir
+chezmoi edit ~/.zshrc     # edit a specific managed file's source
+chezmoi cd                # cd into the source dir
 ```
 
-### Step 4
-This set of dotfiles uses the powerlevel10k theme for zsh, this makes your terminal look better and adds lots of useful features, e.g. env indicators, git status etc...
+To change the `macos` / `vim` / `installTmux` / `installZsh` answers after the
+first init, edit `~/.config/chezmoi/chezmoi.toml` (or re-run `chezmoi init`).
 
-Note that as the provided powerlevel10k config uses special icons it is *highly recommended* you install a custom font that supports these icons. A guide to do that is [here](https://github.com/romkatv/powerlevel10k#meslo-nerd-font-patched-for-powerlevel10k). Alternatively you can set up powerlevel10k to not use these icons (but it won't look as good!)
+## Forcing the install script to re-run
 
-This repo comes with a preconfigured powerlevel10k theme in [`./config/p10k.zsh`](./config/p10k.zsh) but you can reconfigure this by running `p10k configure` which will launch an interactive window. 
-
-
-When you get to the last two options below
-```
-Powerlevel10k config file already exists.
-Overwrite ~/git/sm-dotfiles/config/p10k.zsh?
-# Press y for YES
-
-Apply changes to ~/.zshrc?
-# Press n for NO 
-```
-
-You then will want to paste the following command into the created p10k.zsh file so that when you are in a singularity image you will have an indicator in your terminal.
-
-```
-------> Add 'singularity' to the POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS < --------
-typeset -g POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(
-    # =========================[ Line #1 ]=========================
-    status                  # exit code of the last command
-    command_execution_time  # duration of the last command
-    background_jobs         # presence of background jobs
-    direnv                  # direnv status (https://direnv.net/)
-    asdf                    # asdf version manager (https://github.com/asdf-vm/asdf)
-    virtualenv              # python virtual environment (https://docs.python.org/3/library/venv.html)
-    singularity             # ADD THIS LINE HERE <-------
-
-.......
-
-------> # Add the prompt_singularity() function beneath the prompt example section (shown below) of p10k.zsh < --------
-# Example of a user-defined prompt segment. Function prompt_example will be called on every
-# prompt if `example` prompt segment is added to POWERLEVEL9K_LEFT_PROMPT_ELEMENTS or
-# POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS. It displays an icon and orange text greeting the user.
-#
-# Type `p10k help segment` for documentation and a more sophisticated example.
-function prompt_example() {
-p10k segment -f 208 -i '⭐' -t 'hello, %n'
-}
-
-ADD THIS FUNCTION HERE --------> 
-  function prompt_singularity() {
-    if [ ! -z "$SINGULARITY_CONTAINER" ]; then
-      name=$(echo ${SINGULARITY_CONTAINER} | awk -F/ '{print $(NF-0)}')
-      p10k segment -f 031 -i '💫' -t "${name}"
-    fi
-  }
-  
-```
-
-### Optional
-Included in this repo are the onedark and onedarker color schemes for iterm, you can use these if you want just go to import under profiles > colors > color\_presets in settings. 
-
-### Other examples
-Linked below are some other peoples dotfiles
-* [Ed's](https://github.com/erees1/dotfiles) - (Very) extensive nvim config, custom tmux theme, vim keybindings in terminal, gitconfig, install scripts for nvim (nightly) and delta (nicer looking git diff)
-* [John's](https://github.com/McHughes288/dotfiles) - Very similar to sm-dotfiles but has some useful vscode extensions if you'd like some recommendations.
+`run_onchange_install-dependencies.sh.tmpl` runs once and again only when its
+content changes. Bump the `# version: 1` comment near the top to force a
+re-run (the old `--force` behaviour).

@@ -16,3 +16,6 @@ split-divider-color = #f0f0f0
 # Add padding
 window-padding-x = 8
 window-padding-y = 8
+
+custom-shader = shaders/cursor_warp.glsl
+keybind = shift+enter=text:\x1b\r

@@ -1,0 +1,12 @@
+{{- if not .vim }}
+.vimrc
+{{- end }}
+{{- if not .macos }}
+.config/ghostty/config
+.aerospace.toml
+{{- end }}
+
+# Repo metadata, not deployed to $HOME
+README.md
+iterm
+

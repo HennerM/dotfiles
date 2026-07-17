@@ -1,0 +1,18 @@
+{{/*
+  chezmoi config. On first `chezmoi init` these prompts populate
+  ~/.config/chezmoi/chezmoi.toml. Re-run with `chezmoi init` to change.
+*/}}
+{{- $name := promptStringOnce . "name" "Git user.name" "" -}}
+{{- $email := promptStringOnce . "email" "Git user.email" "" -}}
+{{- $macos := promptBoolOnce . "macos" "macOS machine (deploy ghostty config)?" false -}}
+{{- $vim := promptBoolOnce . "vim" "Deploy simple vimrc?" false -}}
+{{- $installTmux := promptBoolOnce . "installTmux" "Install tmux via package manager?" false -}}
+{{- $installZsh := promptBoolOnce . "installZsh" "Install zsh via package manager?" false -}}
+
+[data]
+    name = {{ $name | quote }}
+    email = {{ $email | quote }}
+    macos = {{ $macos }}
+    vim = {{ $vim }}
+    installTmux = {{ $installTmux }}
+    installZsh = {{ $installZsh }}

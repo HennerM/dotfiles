@@ -4,7 +4,12 @@ set -euo pipefail
 # This is a chezmoi `run_onchange_` script: it runs on first apply and again
 # only when this file's content changes. Bump the version line below to force
 # a re-run (the old --force behaviour).
-# version: 4
+# version: 5
+{{- /* installAoe is a newer data key; hosts whose chezmoi.toml predates it
+       won't have the entry, so guard with hasKey to avoid strict-mode
+       "map has no entry" errors on `chezmoi apply` without a re-init. */ -}}
+{{- $installAoe := false -}}
+{{- if hasKey . "installAoe" }}{{- $installAoe = .installAoe -}}{{- end }}
 
 operating_system="$(uname -s)"
 case "${operating_system}" in
@@ -77,7 +82,7 @@ warn_no_root() {
 # The script installs a static binary into ~/.local/bin (no root needed) on
 # both Linux and macOS. aoe hard-requires tmux, so enabling `installAoe`
 # also forces tmux to be installed via the package manager (see the
-# `or .installAoe` guards on the tmux install lines below).
+# `or $installAoe` guards on the tmux install lines below).
 install_aoe() {
     local bindir="$HOME/.local/bin"
     if command -v aoe >/dev/null 2>&1; then
@@ -96,7 +101,7 @@ if [ "$machine" = "Linux" ]; then
 {{- if .installZsh }}
         sudo apt-get install -y zsh
 {{- end }}
-{{- if or .installTmux .installAoe }}
+{{- if or .installTmux $installAoe }}
         sudo apt-get install -y tmux
 {{- end }}
     else
@@ -106,11 +111,11 @@ if [ "$machine" = "Linux" ]; then
 {{- if .installZsh }}
         warn_no_root zsh
 {{- end }}
-{{- if or .installTmux .installAoe }}
+{{- if or .installTmux $installAoe }}
         warn_no_root tmux
 {{- end }}
     fi
-{{- if .installAoe }}
+{{- if $installAoe }}
     install_aoe
 {{- end }}
 elif [ "$machine" = "Mac" ]; then
@@ -118,10 +123,10 @@ elif [ "$machine" = "Mac" ]; then
 {{- if .installZsh }}
     brew install zsh
 {{- end }}
-{{- if or .installTmux .installAoe }}
+{{- if or .installTmux $installAoe }}
     brew install tmux
 {{- end }}
-{{- if .installAoe }}
+{{- if $installAoe }}
     brew install aoe
 {{- end }}
 fi

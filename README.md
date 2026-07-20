@@ -19,6 +19,7 @@ private_dot_config/zsh/aliases.sh   # ~/.config/zsh/aliases.sh   (sourced by zsh
 private_dot_config/zsh/extras.sh    # ~/.config/zsh/extras.sh
 private_dot_config/zsh/slurm.sh     # ~/.config/zsh/slurm.sh
 private_dot_config/zsh/p10k.zsh     # ~/.config/zsh/p10k.zsh
+private_dot_config/starship.toml    # ~/.config/starship.toml (hostname shortening)
 private_dot_config/ghostty/config   # ~/.config/ghostty/config  (when macos=true)
 dot_aerospace.toml                 # ~/.aerospace.toml         (when macos=true)
 run_onchange_install-dependencies.sh.tmpl  # brew/apt deps + oh-my-zsh + plugins

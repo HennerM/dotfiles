@@ -11,6 +11,7 @@ repo).
 .chezmoi.toml.tmpl                  # prompts for macos/vim/installTmux/installZsh + git identity
 .chezmoiignore                      # conditional files (vimrc, ghostty)
 dot_zshrc                           # ~/.zshrc
+dot_bashrc                          # ~/.bashrc (execs zsh if installed)
 dot_tmux.conf                       # ~/.tmux.conf
 dot_gitconfig.tmpl                  # ~/.gitconfig (user.name/email templated)
 dot_vimrc                           # ~/.vimrc         (when vim=true)
@@ -100,6 +101,10 @@ What differs between the two:
   ignored by chezmoi on both platforms.
 - **`coreutils`.** On macOS the install script also pulls in `coreutils`
   (for `realpath`, `gls`, etc. used by the aliases). Linux already has these.
+- **Auto-zsh from bash.** `~/.bashrc` execs `zsh -l` when zsh is installed and
+  the current shell isn't already zsh. This matters on servers where your
+  login shell is bash (e.g. you can't `chsh` without root): SSH or terminal
+  login still drops you into the managed zsh setup automatically.
 
 ### 3. (Optional) powerlevel10k
 

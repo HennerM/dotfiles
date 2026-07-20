@@ -5,3 +5,7 @@
 # FQDNs like `host.example.com` render as `host`.
 [hostname]
 trim_at = '.'
+
+# Hide the Google Cloud prompt segment.
+[gcloud]
+disabled = true

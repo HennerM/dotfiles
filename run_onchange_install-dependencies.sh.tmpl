@@ -4,7 +4,7 @@ set -euo pipefail
 # This is a chezmoi `run_onchange_` script: it runs on first apply and again
 # only when this file's content changes. Bump the version line below to force
 # a re-run (the old --force behaviour).
-# version: 2
+# version: 4
 
 operating_system="$(uname -s)"
 case "${operating_system}" in
@@ -73,13 +73,30 @@ warn_no_root() {
     fi
 }
 
+# Install agent-of-empires (aoe) via the official install.sh script.
+# The script installs a static binary into ~/.local/bin (no root needed) on
+# both Linux and macOS. aoe hard-requires tmux, so enabling `installAoe`
+# also forces tmux to be installed via the package manager (see the
+# `or .installAoe` guards on the tmux install lines below).
+install_aoe() {
+    local bindir="$HOME/.local/bin"
+    if command -v aoe >/dev/null 2>&1; then
+        echo "aoe already installed at $(command -v aoe)"
+        return
+    fi
+    echo "Installing agent-of-empires (aoe) to $bindir..."
+    curl -fsSL \
+        https://raw.githubusercontent.com/agent-of-empires/agent-of-empires/main/scripts/install.sh \
+        | INSTALL_DIR="$bindir" bash
+}
+
 if [ "$machine" = "Linux" ]; then
     if sudo -n true 2>/dev/null; then
         sudo apt-get install -y git-delta starship
 {{- if .installZsh }}
         sudo apt-get install -y zsh
 {{- end }}
-{{- if .installTmux }}
+{{- if or .installTmux .installAoe }}
         sudo apt-get install -y tmux
 {{- end }}
     else
@@ -89,17 +106,23 @@ if [ "$machine" = "Linux" ]; then
 {{- if .installZsh }}
         warn_no_root zsh
 {{- end }}
-{{- if .installTmux }}
+{{- if or .installTmux .installAoe }}
         warn_no_root tmux
 {{- end }}
     fi
+{{- if .installAoe }}
+    install_aoe
+{{- end }}
 elif [ "$machine" = "Mac" ]; then
     brew install coreutils git-delta starship
 {{- if .installZsh }}
     brew install zsh
 {{- end }}
-{{- if .installTmux }}
+{{- if or .installTmux .installAoe }}
     brew install tmux
+{{- end }}
+{{- if .installAoe }}
+    brew install aoe
 {{- end }}
 fi
 

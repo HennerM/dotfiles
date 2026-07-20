@@ -8,7 +8,7 @@ repo).
 ## Layout
 
 ```
-.chezmoi.toml.tmpl                  # prompts for macos/vim/installTmux/installZsh + git identity
+.chezmoi.toml.tmpl                  # prompts for macos/vim/installTmux/installZsh/installAoe + git identity
 .chezmoiignore                      # conditional files (vimrc, ghostty)
 dot_zshrc                           # ~/.zshrc
 dot_bashrc                          # ~/.bashrc (execs zsh if installed)
@@ -55,6 +55,10 @@ You will be asked:
 - `Deploy simple vimrc?` — equivalent to the old `--vim`
 - `Install tmux via package manager?` — equivalent to the old `--tmux`
 - `Install zsh via package manager?` — equivalent to the old `--zsh`
+- `Install agent-of-empires (aoe) session manager?` — installs `aoe`
+  (`brew install aoe` on macOS, the official install.sh into `~/.local/bin`
+  on Linux). aoe hard-requires tmux, so enabling this also installs tmux
+  (the `installTmux` flag is implied and does not need to be set).
 
 Answers are stored in `~/.config/chezmoi/chezmoi.toml`; `dot_gitconfig.tmpl`
 renders `[user] name`/`email` from them, so your git identity is set up
@@ -63,10 +67,10 @@ entries, credentials) go in `~/.gitconfig.local`, which is `[include]`d by
 `~/.gitconfig`.
 
 `chezmoi init --apply` also runs `run_onchange_install-dependencies.sh.tmpl`,
-which installs `git-delta`, `starship`, oh-my-zsh and the zsh plugins. The
-script auto-detects the OS via `uname -s` and uses `brew` on macOS or
-`apt-get` on Linux; on a host where everything is already present it just
-skips.
+which installs `git-delta`, `starship`, oh-my-zsh and the zsh plugins, and
+optionally `aoe` (agent-of-empires). The script auto-detects the OS via
+`uname -s` and uses `brew` on macOS or `apt-get` on Linux; on a host where
+everything is already present it just skips.
 
 ### macOS vs. server / Ubuntu
 
@@ -79,6 +83,7 @@ the OS the install script detects. Typical answers per deployment type:
 | `Deploy simple vimrc?`   | your choice               | your choice                |
 | `Install tmux ...`        | `true` (not preinstalled) | `false` (usually present)  |
 | `Install zsh ...`         | `true` (not preinstalled) | `false` (usually present)  |
+| `Install agent-of-empires?` | your choice             | your choice                |
 
 What differs between the two:
 
@@ -132,8 +137,9 @@ chezmoi edit ~/.zshrc     # edit a specific managed file's source
 chezmoi cd                # cd into the source dir
 ```
 
-To change the `macos` / `vim` / `installTmux` / `installZsh` answers after the
-first init, edit `~/.config/chezmoi/chezmoi.toml` (or re-run `chezmoi init`).
+To change the `macos` / `vim` / `installTmux` / `installZsh` / `installAoe`
+answers after the first init, edit `~/.config/chezmoi/chezmoi.toml` (or re-run
+`chezmoi init`).
 
 ## Forcing the install script to re-run
 

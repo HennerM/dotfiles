@@ -5,6 +5,9 @@
 # ~/.zshrc.local and is sourced early so PATH/agent are ready before starship.
 [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
 
+# User-space binaries (rootless starship/git-delta on servers without root).
+export PATH="$HOME/.local/bin:$PATH"
+
 CONFIG_DIR="$HOME/.config/zsh"
 DOT_DIR="$HOME/Documents/dotfiles"
 

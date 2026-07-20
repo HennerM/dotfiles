@@ -4,7 +4,7 @@ set -euo pipefail
 # This is a chezmoi `run_onchange_` script: it runs on first apply and again
 # only when this file's content changes. Bump the version line below to force
 # a re-run (the old --force behaviour).
-# version: 1
+# version: 2
 
 operating_system="$(uname -s)"
 case "${operating_system}" in
@@ -13,14 +13,86 @@ case "${operating_system}" in
     *)       machine="UNKNOWN:${operating_system}"
 esac
 
+# Install starship as a static binary into ~/.local/bin (no root needed).
+install_starship_rootless() {
+    local bindir="$HOME/.local/bin"
+    mkdir -p "$bindir"
+    if [ -x "$bindir/starship" ]; then
+        echo "starship already present at $bindir/starship"
+    else
+        echo "Installing starship to $bindir (user-space, no root)..."
+        curl -sS https://starship.rs/install.sh | sh -s -- -y -b "$bindir"
+    fi
+}
+
+# Install git-delta as a static binary into ~/.local/bin (no root needed).
+install_delta_rootless() {
+    local bindir="$HOME/.local/bin"
+    mkdir -p "$bindir"
+    if [ -x "$bindir/delta" ]; then
+        echo "git-delta already present at $bindir/delta"
+        return
+    fi
+    local arch
+    arch="$(uname -m)"
+    # Normalise: macOS reports arm64, Linux reports aarch64.
+    [ "$arch" = "arm64" ] && arch="aarch64"
+    echo "Installing git-delta to $bindir (user-space, no root, arch=$arch)..."
+    local delta_url
+    # Prefer the musl (fully static) build; fall back to the gnu (glibc) build.
+    delta_url=$(curl -fsSL https://api.github.com/repos/dandavison/delta/releases/latest \
+        | grep '"browser_download_url"' \
+        | grep "${arch}-unknown-linux-musl.tar.gz" \
+        | head -1 \
+        | cut -d'"' -f4) || true
+    if [ -z "$delta_url" ]; then
+        delta_url=$(curl -fsSL https://api.github.com/repos/dandavison/delta/releases/latest \
+            | grep '"browser_download_url"' \
+            | grep "${arch}-unknown-linux-gnu.tar.gz" \
+            | head -1 \
+            | cut -d'"' -f4) || true
+    fi
+    if [ -z "$delta_url" ]; then
+        echo "WARNING: could not find a git-delta binary for ${arch}; skipping."
+        return
+    fi
+    local tmpdir
+    tmpdir="$(mktemp -d)"
+    curl -fsSL "$delta_url" | tar xz -C "$tmpdir"
+    cp "$tmpdir"/delta-*/delta "$bindir/delta"
+    rm -rf "$tmpdir"
+}
+
+# Warn that a tool can't be installed without root.
+warn_no_root() {
+    local tool="$1"
+    if command -v "$tool" >/dev/null 2>&1; then
+        echo "$tool already installed at $(command -v "$tool")"
+    else
+        echo "WARNING: cannot install $tool without root; install it manually."
+    fi
+}
+
 if [ "$machine" = "Linux" ]; then
-    sudo apt-get install -y git-delta starship
+    if sudo -n true 2>/dev/null; then
+        sudo apt-get install -y git-delta starship
 {{- if .installZsh }}
-    sudo apt-get install -y zsh
+        sudo apt-get install -y zsh
 {{- end }}
 {{- if .installTmux }}
-    sudo apt-get install -y tmux
+        sudo apt-get install -y tmux
 {{- end }}
+    else
+        echo "No passwordless sudo on this host; installing to ~/.local/bin (user-space)."
+        install_starship_rootless
+        install_delta_rootless
+{{- if .installZsh }}
+        warn_no_root zsh
+{{- end }}
+{{- if .installTmux }}
+        warn_no_root tmux
+{{- end }}
+    fi
 elif [ "$machine" = "Mac" ]; then
     brew install coreutils git-delta starship
 {{- if .installZsh }}

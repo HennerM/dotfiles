@@ -81,8 +81,17 @@ the OS the install script detects. Typical answers per deployment type:
 What differs between the two:
 
 - **Package manager.** `run_onchange_install-dependencies.sh.tmpl` runs
-  `brew install` on Darwin and `sudo apt-get install` on Linux — chosen by
-  `uname -s`, not the `macos` flag, so it stays correct even if you mis-answer.
+  `brew install` on Darwin. On Linux it uses `sudo apt-get install` when
+  passwordless sudo is available, otherwise falls back to user-space static
+  binary installs into `~/.local/bin` (no root needed) for `starship` and
+  `git-delta`. The OS is chosen by `uname -s`, not the `macos` flag, so it
+  stays correct even if you mis-answer.
+- **No-root servers.** On a Linux host without root, `starship` is installed
+  via its official installer and `git-delta` via a musl static binary from
+  GitHub releases — both into `~/.local/bin`, which `~/.zshrc` prepends to
+  `PATH`. `zsh` and `tmux` cannot be built user-space without a compiler, so
+  when `installZsh`/`installTmux` are set but no sudo is available the script
+  warns and skips them (they are usually already present on servers).
 - **macOS-only configs.** `~/.config/ghostty/config` (Ghostty terminal) and
   `~/.aerospace.toml` (AeroSpace tiling WM) are only deployed when `macos=true`.
   On a server both files are ignored and their target paths are never created.

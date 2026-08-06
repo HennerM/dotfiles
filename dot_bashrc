@@ -4,6 +4,14 @@
 # If zsh is installed, replace this bash shell with a zsh login shell.
 # This lets hosts where the login shell is bash (e.g. some servers where you
 # can't chsh without root) still drop into the managed zsh setup on login.
+#
+# Only exec for interactive shells: non-interactive bash (scp, rsync, git over
+# ssh, ansible, etc.) must keep running bash or they break (scp in particular
+# fails if the shell prints anything before the transfer).
+case $- in
+    *i*) : ;;
+    *) return ;;
+esac
 if [ -x "$(command -v zsh)" ] && [ -z "${ZSH_VERSION:-}" ]; then
     export SHELL="$(command -v zsh)"
     exec zsh -l

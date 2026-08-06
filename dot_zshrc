@@ -22,7 +22,8 @@ plugins=(zsh-autosuggestions
 	zsh-history-substring-search
 	z
 	brew
-	git
+	gitfast
+	uv
 	you-should-use
 	zsh-navigation-tools)
 

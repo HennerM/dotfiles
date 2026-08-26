@@ -32,3 +32,18 @@ source $CONFIG_DIR/aliases.sh
 source $CONFIG_DIR/extras.sh
 source $CONFIG_DIR/slurm.sh
 which starship >/dev/null 2>&1 && eval "$(starship init zsh)"
+
+# merge.conflictStyle: prefer zdiff3 (git >= 2.35), fall back to diff3.
+# `git config` doesn't validate enum values at write time, so a plain
+# `git config merge.conflictStyle zdiff3` always succeeds regardless of git
+# version — the error only surfaces at merge time on old git. Compare the
+# version instead.
+if command -v git >/dev/null 2>&1; then
+    _gitver=$(git --version 2>/dev/null | awk '{print $3}')
+    if printf '%s\n2.35\n' "$_gitver" | sort -V | head -1 | grep -q '^2.35$'; then
+        git config --global merge.conflictStyle zdiff3
+    else
+        git config --global merge.conflictStyle diff3
+    fi
+    unset _gitver
+fi

@@ -8,7 +8,7 @@ repo).
 ## Layout
 
 ```
-.chezmoi.toml.tmpl                  # prompts for macos/vim/installTmux/installZsh/installAoe + git identity
+.chezmoi.toml.tmpl                  # prompts for macos/vim/installTmux/installZsh/installAoe/gpgKey + git identity
 .chezmoiignore                      # conditional files (vimrc, ghostty)
 dot_zshrc                           # ~/.zshrc
 dot_bashrc                          # ~/.bashrc (execs zsh if installed)
@@ -59,6 +59,10 @@ You will be asked:
   (`brew install aoe` on macOS, the official install.sh into `~/.local/bin`
   on Linux). aoe hard-requires tmux, so enabling this also installs tmux
   (the `installTmux` flag is implied and does not need to be set).
+- `SSH signing key for git commits` — path or SSH key ID (e.g.
+  `~/.ssh/id_ed25519` or `ssh-ed25519 AAAA...`). Blank disables signing.
+  When set, enables `gpg.format = ssh`, `commit.gpgsign = true`,
+  `tag.gpgsign = true`, and `user.signingkey`.
 
 Answers are stored in `~/.config/chezmoi/chezmoi.toml`; `dot_gitconfig.tmpl`
 renders `[user] name`/`email` from them, so your git identity is set up
@@ -138,8 +142,8 @@ chezmoi cd                # cd into the source dir
 ```
 
 To change the `macos` / `vim` / `installTmux` / `installZsh` / `installAoe`
-answers after the first init, edit `~/.config/chezmoi/chezmoi.toml` (or re-run
-`chezmoi init`).
+/ `gpgKey` answers after the first init, edit
+`~/.config/chezmoi/chezmoi.toml` (or re-run `chezmoi init`).
 
 ## Forcing the install script to re-run
 

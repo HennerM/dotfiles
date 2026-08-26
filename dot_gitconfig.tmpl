@@ -1,10 +1,31 @@
+{{/* gpgKey is a newer data key; guard with hasKey so hosts whose
+     chezmoi.toml predates it don't error on apply. */}}
+{{- $gpgKey := "" -}}
+{{- if hasKey . "gpgKey" }}{{- $gpgKey = .gpgKey -}}{{- end }}
 [user]
     name = {{ .name }}
     email = {{ .email }}
+{{- if $gpgKey }}
+    signingkey = {{ $gpgKey | quote }}
+{{- end }}
 
 # Local/private config goes in the include
 [include]
     path = ~/.gitconfig.local
+{{- if $gpgKey }}
+
+# Sign commits and tags with an SSH key (gpg.format = ssh).
+# The key is configured above via user.signingkey; set the gpgKey data
+# value to blank to disable signing entirely.
+[gpg]
+    format = ssh
+
+[commit]
+    gpgsign = true
+
+[tag]
+    gpgsign = true
+{{- end }}
 
 [core]
     pager = delta

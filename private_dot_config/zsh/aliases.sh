@@ -73,7 +73,7 @@ alias gc="git commit -m"
 alias gcn="git commit --amend --no-edit"
 alias gcan="git commit -a --amend --no-edit"
 alias gp="git push"
-alias gpf="git push -f --no-verify"
+alias gpf="git push --force-with-lease --no-verify"
 
 alias gg='git gui'
 alias glog='git log --oneline --all --graph --decorate'

@@ -4,7 +4,7 @@ set -euo pipefail
 # This is a chezmoi `run_onchange_` script: it runs on first apply and again
 # only when this file's content changes. Bump the version line below to force
 # a re-run (the old --force behaviour).
-# version: 5
+# version: 6
 {{- /* installAoe is a newer data key; hosts whose chezmoi.toml predates it
        won't have the entry, so guard with hasKey to avoid strict-mode
        "map has no entry" errors on `chezmoi apply` without a re-init. */ -}}
@@ -96,7 +96,10 @@ install_aoe() {
 }
 
 if [ "$machine" = "Linux" ]; then
-    if sudo -n true 2>/dev/null; then
+    # Use apt-get only when both apt-get and passwordless sudo are available.
+    # On distros without apt-get (Alpine, Fedora, Arch, NixOS) or hosts
+    # without sudo (containers, unprivileged), fall back to rootless installs.
+    if command -v apt-get >/dev/null 2>&1 && sudo -n true 2>/dev/null; then
         sudo apt-get install -y git-delta starship
 {{- if .installZsh }}
         sudo apt-get install -y zsh
@@ -105,7 +108,7 @@ if [ "$machine" = "Linux" ]; then
         sudo apt-get install -y tmux
 {{- end }}
     else
-        echo "No passwordless sudo on this host; installing to ~/.local/bin (user-space)."
+        echo "No apt-get or no passwordless sudo; installing to ~/.local/bin (user-space)."
         install_starship_rootless
         install_delta_rootless
 {{- if .installZsh }}

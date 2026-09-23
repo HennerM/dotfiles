@@ -92,11 +92,13 @@ the OS the install script detects. Typical answers per deployment type:
 What differs between the two:
 
 - **Package manager.** `run_onchange_install-dependencies.sh.tmpl` runs
-  `brew install` on Darwin. On Linux it uses `sudo apt-get install` when
-  passwordless sudo is available, otherwise falls back to user-space static
-  binary installs into `~/.local/bin` (no root needed) for `starship` and
-  `git-delta`. The OS is chosen by `uname -s`, not the `macos` flag, so it
-  stays correct even if you mis-answer.
+  `brew install` on Darwin. On Linux it uses `sudo apt-get install` when both
+  `apt-get` and passwordless sudo are available, otherwise falls back to
+  user-space static binary installs into `~/.local/bin` (no root needed) for
+  `starship` and `git-delta`. This means non-Debian distros (Alpine, Fedora,
+  Arch, NixOS) and hosts without sudo (containers, unprivileged) get the
+  rootless path automatically. The OS is chosen by `uname -s`, not the
+  `macos` flag, so it stays correct even if you mis-answer.
 - **No-root servers.** On a Linux host without root, `starship` is installed
   via its official installer and `git-delta` via a musl static binary from
   GitHub releases — both into `~/.local/bin`, which `~/.zshrc` prepends to

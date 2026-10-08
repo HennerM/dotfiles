@@ -7,12 +7,14 @@
 #
 # Only exec for interactive shells: non-interactive bash (scp, rsync, git over
 # ssh, ansible, etc.) must keep running bash or they break (scp in particular
-# fails if the shell prints anything before the transfer).
+# fails if the shell prints anything before the transfer). The tty check keeps
+# interactive-but-piped bash (e.g. `ssh host 'bash -i'` with pipes on stdin and
+# stdout) from being taken over, which would make zsh consume the piped input.
 case $- in
     *i*) : ;;
     *) return ;;
 esac
-if [ -x "$(command -v zsh)" ] && [ -z "${ZSH_VERSION:-}" ]; then
+if [[ -t 0 && -t 1 ]] && [ -x "$(command -v zsh)" ] && [ -z "${ZSH_VERSION:-}" ]; then
     export SHELL="$(command -v zsh)"
     exec zsh -l
 fi

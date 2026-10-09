@@ -18,3 +18,7 @@ if [[ -t 0 && -t 1 ]] && [ -x "$(command -v zsh)" ] && [ -z "${ZSH_VERSION:-}" ]
     export SHELL="$(command -v zsh)"
     exec zsh -l
 fi
+
+# Host-specific config (secrets, account vars, etc.) lives in ~/.bashrc.local,
+# mirroring ~/.zshrc.local, so it survives chezmoi apply.
+[[ -f ~/.bashrc.local ]] && source ~/.bashrc.local

@@ -2,6 +2,9 @@
      chezmoi.toml predates it don't error on apply. */}}
 {{- $gpgKey := "" -}}
 {{- if hasKey . "gpgKey" }}{{- $gpgKey = .gpgKey -}}{{- end }}
+{{- /* checkout.workers=16, alias.lb and safe.directory match what the
+       clusters' /etc/shell-config/shell-config.sh enforces on every shell;
+       keeping them identical avoids perpetual chezmoi diffs. */}}
 [user]
     name = {{ .name }}
     email = {{ .email }}
@@ -33,7 +36,7 @@
     checkstat = minimal
 
 [checkout]
-    workers = 8
+    workers = 16
 
 [init]
     defaultBranch = main
@@ -55,8 +58,11 @@
 
 [alias]
     fix-commit = "!f() { pre-commit run && git add . && git commit -m \"$@\"; }; f"
+    lb = for-each-ref --sort=committerdate refs/heads/ --format=\"%(refname:short) %(committerdate:relative)\"
 
 [fetch]
 	prune = true
 [rebase]
 	autosquash = true
+[safe]
+    directory = /mnt/vast/shared/registry

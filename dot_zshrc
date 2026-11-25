@@ -6,7 +6,7 @@
 [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
 
 # User-space binaries (rootless starship/git-delta on servers without root).
-export PATH="$HOME/.local/bin:$PATH"
+export PATH="$HOME/.local/bin:$HOME/bin:$HOME/.pi/agent/bin:$PATH"
 
 CONFIG_DIR="$HOME/.config/zsh"
 DOT_DIR="$HOME/Documents/dotfiles"

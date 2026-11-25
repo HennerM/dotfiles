@@ -164,6 +164,37 @@ else
         "$ZSH_CUSTOM/plugins/you-should-use"
 fi
 
+# Ensure custom plugins are present even if oh-my-zsh was already installed.
+# Each plugin is cloned only if its directory is missing.
+install_plugin_if_missing() {
+    local repo="$1"
+    local target="$2"
+    if [ ! -d "$target" ]; then
+        echo "Installing plugin $(basename "$target")..."
+        git clone "$repo" "$target"
+    fi
+}
+
+install_plugin_if_missing \
+    https://github.com/zsh-users/zsh-syntax-highlighting.git \
+    "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting"
+
+install_plugin_if_missing \
+    https://github.com/zsh-users/zsh-autosuggestions \
+    "$ZSH_CUSTOM/plugins/zsh-autosuggestions"
+
+install_plugin_if_missing \
+    https://github.com/zsh-users/zsh-completions \
+    "$ZSH_CUSTOM/plugins/zsh-completions"
+
+install_plugin_if_missing \
+    https://github.com/zsh-users/zsh-history-substring-search \
+    "$ZSH_CUSTOM/plugins/zsh-history-substring-search"
+
+install_plugin_if_missing \
+    https://github.com/MichaelAquilina/zsh-you-should-use \
+    "$ZSH_CUSTOM/plugins/you-should-use"
+
 {{- if $installPi }}
 # Install pi coding agent if not already present
 install_pi() {

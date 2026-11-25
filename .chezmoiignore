@@ -6,6 +6,9 @@
 .aerospace.toml
 {{- end }}
 
+# pi agent secrets (API keys) – never deploy
+.pi/agent/auth.json
+
 # Repo metadata, not deployed to $HOME
 README.md
 iterm

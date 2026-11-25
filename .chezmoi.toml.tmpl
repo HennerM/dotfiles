@@ -9,7 +9,7 @@
 {{- $installTmux := promptBoolOnce . "installTmux" "Install tmux via package manager?" false -}}
 {{- $installZsh := promptBoolOnce . "installZsh" "Install zsh via package manager?" false -}}
 {{- $installAoe := promptBoolOnce . "installAoe" "Install agent-of-empires (aoe) session manager?" false -}}
-{{- $installPi := promptBoolOnce . "installPi" "Install pi coding agent?" false -}}
+{{- $installPi := promptBoolOnce . "installPi" "Install pi coding agent?" true -}}
 {{- $gpgKey := promptStringOnce . "gpgKey" "SSH signing key for git commits (path or SSH key ID, blank to skip signing)" "" -}}
 
 [data]
